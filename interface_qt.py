@@ -5,13 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QIcon, QFont
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from TSP_Solver import TSPSolver
 
 class TSPSolverApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("TSP Solver With Backtracking")
+        self.setWindowTitle("TSP Solver Python")
 
         # Tạo tọa độ ngẫu nhiên cho các vị trí
         self.num_locations = 6
@@ -36,30 +37,39 @@ class TSPSolverApp(QMainWindow):
 
         layout = QFormLayout()
 
+        # Đặt biểu tượng cho ứng dụng
+        app_icon = QIcon("icon.png")
+        app.setWindowIcon(app_icon)
+
         # Tạo label chủ đề đồ án
         self.label = QLabel("Travelling Saleman Problem with Backtracking", self)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setFont(QFont("Arial", 14, QFont.Bold))
         layout.addWidget(self.label)
 
         # Tạo label chọn vị trí
         self.label_location = QLabel("Chọn vị trí (điểm) đầu tiên:", self)
+        self.label_location.setFont(QFont("Arial", 10))
         layout.addWidget(self.label_location)
 
         # Tạo Combobox để chọn vị trí bắt đầu
         self.combo_box = QComboBox(self)
-        self.combo_box.setFixedSize(100, 30)
+        self.combo_box.setFixedSize(120, 30)
+        self.combo_box.setFont(QFont("Arial", 10))
         self.combo_box.addItems([f"Điểm {i + 1}" for i in range(self.num_locations)])
         layout.addWidget(self.combo_box)
 
         # Tạo nút Solve
         self.solve_button = QPushButton("Thực thi", self)
-        self.solve_button.setFixedSize(100, 30)
+        self.solve_button.setFixedSize(120, 40)
+        self.solve_button.setFont(QFont("Arial", 10))
+        self.solve_button.setStyleSheet("background-color: #008CBA; color: white; border-radius: 20px;")
         self.solve_button.clicked.connect(self.solve_tsp)
         layout.addWidget(self.solve_button)
 
         # Tạo label để hiển thị kết quả
         self.result_label = QLabel("Kết quả:",self)
-        #self.result_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.result_label.setFont(QFont("Arial", 10))
         layout.addWidget(self.result_label)
 
         # Tạo hình và trục cho đồ thị
