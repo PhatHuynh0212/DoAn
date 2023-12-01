@@ -1,5 +1,3 @@
-import numpy as np
-
 class TSPSolver:
     def __init__(self, locations): 
         # Gán danh sách các địa điểm (locations) được truyền vào thành thuộc tính self.locations của lớp.

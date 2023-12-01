@@ -44,6 +44,7 @@ class TSPSolverApp(QMainWindow):
         self.label = QLabel("Travelling Saleman Problem with Backtracking", self)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setFont(QFont("Arial", 14, QFont.Bold))
+        self.label.setStyleSheet("color: red")
         layout.addWidget(self.label)
 
         # Tạo label chọn vị trí
@@ -53,13 +54,14 @@ class TSPSolverApp(QMainWindow):
 
         # Tạo Combobox để chọn vị trí bắt đầu
         self.combo_box = QComboBox(self)
-        self.combo_box.setFixedSize(120, 30)
+        self.combo_box.setFixedSize(120, 40)
         self.combo_box.setFont(QFont("Arial", 10))
         self.combo_box.addItems([f"Điểm {i + 1}" for i in range(self.num_locations)])
         layout.addWidget(self.combo_box)
 
         # Tạo nút Solve
         self.solve_button = QPushButton("Thực thi", self)
+        self.solve_button.mapFrom
         self.solve_button.setFixedSize(120, 40)
         self.solve_button.setFont(QFont("Arial", 10))
         self.solve_button.setStyleSheet("background-color: #008CBA; color: white; border-radius: 20px;")
@@ -72,7 +74,7 @@ class TSPSolverApp(QMainWindow):
         layout.addWidget(self.result_label)
 
         # Tạo hình và trục cho đồ thị
-        self.fig, self.ax = plt.subplots(figsize=(8, 8))
+        self.fig, self.ax = plt.subplots(figsize=(6, 6))
 
         # Tạo canvas để hiển thị biểu đồ
         self.canvas = FigureCanvas(self.fig)
