@@ -6,19 +6,19 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QFont
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from TSP_Solver import TSPSolver
+from TSP_Backtracking import TSPBacktracking
 
 class TSPSolverApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("TSP Solver Python")
 
-        # Tạo tọa độ ngẫu nhiên cho các vị trí
+        # Tọa độ ngẫu nhiên cho các điểm
         self.num_locations = 6
         self.x_coordinates = [random.uniform(0, 10) for _ in range(self.num_locations)]
         self.y_coordinates = [random.uniform(0, 10) for _ in range(self.num_locations)]
 
-        # Tạo khoảng cách giữa các vị trí
+        # Khoảng cách giữa các điểm
         self.locations = []
         for i in range(self.num_locations):
             row = []
@@ -27,10 +27,8 @@ class TSPSolverApp(QMainWindow):
                 row.append(distance)
             self.locations.append(row)
 
-        # Create the TSP solver instance
-        self.solver = TSPSolver(self.locations)
+        self.solver = TSPBacktracking(self.locations)
 
-        # Tạo giao diện
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
 
@@ -40,26 +38,26 @@ class TSPSolverApp(QMainWindow):
         app_icon = QIcon("icon.png")
         app.setWindowIcon(app_icon)
 
-        # Tạo label chủ đề đồ án
+        # Label chủ đề đồ án
         self.label = QLabel("Travelling Saleman Problem with Backtracking", self)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setFont(QFont("Arial", 14, QFont.Bold))
         self.label.setStyleSheet("color: red")
         layout.addWidget(self.label)
 
-        # Tạo label chọn vị trí
+        # Label chọn vị trí
         self.label_location = QLabel("Chọn vị trí (điểm) đầu tiên:", self)
         self.label_location.setFont(QFont("Arial", 10))
         layout.addWidget(self.label_location)
 
-        # Tạo Combobox để chọn vị trí bắt đầu
+        # Combobox để chọn vị trí bắt đầu
         self.combo_box = QComboBox(self)
-        self.combo_box.setFixedSize(120, 40)
+        self.combo_box.setFixedSize(120, 30)
         self.combo_box.setFont(QFont("Arial", 10))
         self.combo_box.addItems([f"Điểm {i + 1}" for i in range(self.num_locations)])
         layout.addWidget(self.combo_box)
 
-        # Tạo nút Solve
+        # Nút thực thi
         self.solve_button = QPushButton("Thực thi", self)
         self.solve_button.mapFrom
         self.solve_button.setFixedSize(120, 40)
@@ -68,22 +66,16 @@ class TSPSolverApp(QMainWindow):
         self.solve_button.clicked.connect(self.solve_tsp)
         layout.addWidget(self.solve_button)
 
-        # Tạo label để hiển thị kết quả
+        # Label để hiển thị kết quả
         self.result_label = QLabel("Kết quả:",self)
         self.result_label.setFont(QFont("Arial", 10))
         layout.addWidget(self.result_label)
 
-        # Tạo hình và trục cho đồ thị
+        # Vẽ đồ thị
         self.fig, self.ax = plt.subplots(figsize=(6, 6))
-
-        # Tạo canvas để hiển thị biểu đồ
         self.canvas = FigureCanvas(self.fig)
         layout.addWidget(self.canvas)
-
-        # Thiết lập layout
         central_widget.setLayout(layout)
-
-        # Đồ thị ban đầu của đồ thị
         self.plot_graph([])
 
     def solve_tsp(self):
@@ -95,11 +87,8 @@ class TSPSolverApp(QMainWindow):
 
     def plot_graph(self, path):
         self.ax.clear()
+        scatter = self.ax.scatter(self.x_coordinates, self.y_coordinates, c='red', s=40)
 
-        # Vẽ các vị trí dưới dạng điểm
-        scatter = self.ax.scatter(self.x_coordinates, self.y_coordinates, c='red', s=50)
-
-        # Vẽ đường dẫn dưới dạng các đường có dấu mũi tên
         for i in range(len(path) - 1):
             start = path[i]
             end = path[i + 1]
@@ -107,7 +96,6 @@ class TSPSolverApp(QMainWindow):
                 xytext=(self.x_coordinates[start], self.y_coordinates[start]),
                 arrowprops=dict(arrowstyle="->", color="blue"))
 
-        # Kết nối tất cả các điểm với các đường đi
         for i in range(self.num_locations):
             for j in range(i + 1, self.num_locations):
                 x_start = self.x_coordinates[i]
@@ -122,12 +110,10 @@ class TSPSolverApp(QMainWindow):
                     self.ax.text(x_end, y_end, place_names[j], ha='left', va='bottom')
                 self.ax.text(self.x_coordinates[i], self.y_coordinates[i], place_names[i], ha='right', va='top')
 
-        # Đặt màu khác cho điểm bắt đầu đã chọn
         if path:
             start_index = path[0]
             scatter.set_facecolors(['cyan' if i == start_index else 'red' for i in range(self.num_locations)])
 
-        # Refresh lại biểu đồ
         self.ax.set_aspect('equal', adjustable='datalim')
         self.canvas.draw()
 
